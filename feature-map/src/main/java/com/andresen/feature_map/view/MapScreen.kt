@@ -4,22 +4,39 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.andresen.feature_map.viewmodel.MapViewModel
+import com.andresen.library_style.theme.TrainingPartnerTheme
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import org.koin.androidx.compose.koinViewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -31,29 +48,12 @@ fun MapScreen(
     onCreateMarkerLongClick: (LatLng) -> Unit = { },*/
 ) {
 
-    val scaffoldState = rememberScaffoldState()
-
-    Scaffold(
-        modifier = Modifier,
-        scaffoldState = scaffoldState,
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("Chat Screen: ", textAlign = TextAlign.Center)
-        }
-    }
-
     /*val mapUiState by viewModel.state.collectAsState(MapMapper.loading())
 
     val uiState = when (val contentUi = mapUiState.mapContent) {
         is MapContentUi.MapContent -> contentUi
         else -> null
-    }
+    }*/
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -68,35 +68,33 @@ fun MapScreen(
         )
     }
 
-    val cameraPositionState = if (uiState != null) {
-        rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(
-                uiState.zoomLocation, 15f
-            )
-        }
-    } else rememberCameraPositionState()
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(
+            LatLng(0.0, 0.0), 15f
+        )
+    } // else rememberCameraPositionState()
 
 
     Scaffold(
-        backgroundColor = OverwatchTheme.colors.medium,
-        contentColor = OverwatchTheme.colors.contrastLight,
+        backgroundColor = TrainingPartnerTheme.colors.medium,
+        contentColor = TrainingPartnerTheme.colors.contrastLight,
         scaffoldState = scaffoldState,
-        topBar = {
+        /*topBar = {
             TopAppBarComposable(
                 isNightVision = mapUiState.mapTopAppBar.isNightVision,
                 onToggleNightVision = { viewModel.onEvent(MapEvent.ToggleNightVision) },
             )
-        },
+        },*/
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 modifier = Modifier
                     .padding(all = 16.dp),
                 onClick = {
                     scope.launch {
-                        if (uiState != null) {
+                        if (false != null) {
                             cameraPositionState.animate(
                                 update = CameraUpdateFactory.newLatLngZoom(
-                                    uiState.zoomLocation,
+                                    LatLng(0.0, 0.0),//uiState.zoomLocation,
                                     15f
                                 ),
                             )
@@ -105,20 +103,20 @@ fun MapScreen(
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = R.drawable.unit),
-                        contentDescription = stringResource(id = R.string.map_locate_target),
+                        painter = painterResource(id = com.andresen.library_style.R.drawable.map),
+                        contentDescription = stringResource(id = com.andresen.library_style.R.string.map),
                         tint = Color.Red
                     )
                 },
                 text = {
                     Text(
-                        text = stringResource(id = R.string.map_locate_target),
+                        text = stringResource(id = com.andresen.library_style.R.string.map),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                 },
-                backgroundColor = OverwatchTheme.colors.mediumLight10,
-                contentColor = OverwatchTheme.colors.contrastLight,
+                backgroundColor = TrainingPartnerTheme.colors.mediumLight10,
+                contentColor = TrainingPartnerTheme.colors.contrastLight,
             )
         },
         floatingActionButtonPosition = FabPosition.Center
@@ -128,13 +126,16 @@ fun MapScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize(),
-            properties = uiState?.properties ?: MapProperties(),
+            properties = MapProperties(
+                isMyLocationEnabled = true,
+                mapType = MapType.NORMAL
+            ), //uiState?.properties ?: MapProperties(),
             uiSettings = uiSettings,
             onMapLongClick = {
-                onCreateMarkerLongClick(it)
+                //onCreateMarkerLongClick(it)
             }
         ) {
-            when (val contentUi = mapUiState.mapContent) {
+            /*when (val contentUi = mapUiState.mapContent) {
                 is MapContentUi.MapContent -> {
                     contentUi.markers.forEach { marker ->
                         CreateMarker(
@@ -147,11 +148,12 @@ fun MapScreen(
 
                 is MapContentUi.Error -> {}
                 is MapContentUi.Loading -> {}
-            }
+            }*/
         }
     }
 }
 
+/*
 @Composable
 private fun CreateMarker(
     marker: MarkerUi,
@@ -185,8 +187,8 @@ private fun CreateMarker(
             bitmapFromVector(LocalContext.current, R.drawable.tarket_marker_38)
                 ?: BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
         }
-    ) */
-}
+    )
+} */
 
 private fun bitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
     val vectorDrawable: Drawable = ContextCompat.getDrawable(context, vectorResId)!!

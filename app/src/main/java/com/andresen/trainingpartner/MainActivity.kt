@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                // mapViewModel.getDeviceLocation(fusedLocationProviderClient)
+                mainViewModel.getDeviceLocation(fusedLocationProviderClient)
             }
         }
 
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
             this,
             ACCESS_FINE_LOCATION
         ) -> {
-            // mapViewModel.getDeviceLocation(fusedLocationProviderClient)
+            mainViewModel.getDeviceLocation(fusedLocationProviderClient)
         }
 
         else -> {
