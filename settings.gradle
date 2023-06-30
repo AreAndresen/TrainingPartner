@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 rootProject.name = "TrainingPartner"
 include ':app'
 include ':feature-map'
+include ':library-repositories'
+include ':library-style'
+include ':library-navigation'

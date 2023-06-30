@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">AdCollector App</string>
+    <string name="title_feature_ads">Feature ads</string>
+
+    <string name="price">Pris: %1$s</string>
+    <string name="title">%1$s</string>
+    <string name="location">Sted: %1$s</string>
+
+    <string name="see_favourites">Favoritter</string>
+
+    <string name="see_none_favourites">Ikke favoritter</string>
+
+    <string name="search_title">Søk etter tittel</string>
+
+    <string name="chat">Chat</string>
+    <string name="map">Map</string>
+    <string name="profile">Profile</string>
+    <string name="loading_failed">Loading failed</string>
+    <string name="retry">Retry</string>
+    <string name="loading">loading</string>
+</resources>
