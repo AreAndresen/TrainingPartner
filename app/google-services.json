@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "555604476540",
+    "project_id": "trainingpartner-3f82d",
+    "storage_bucket": "trainingpartner-3f82d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555604476540:android:1a4ba9032ad8720138fff9",
+        "android_client_info": {
+          "package_name": "com.andresen.trainingpartner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555604476540-gsu0fpo2bk3vjh13q3gn4b61pfj4n95i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andresen.trainingpartner",
+            "certificate_hash": "c532a495a465b62e9b5859ad94a315e663ccf664"
+          }
+        },
+        {
+          "client_id": "555604476540-n2btqti4kmj2h0btb9nmlshu5t6au374.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEJtk0-bHtVPzGWGuyiKt3SSl_A9hW7eI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555604476540-n2btqti4kmj2h0btb9nmlshu5t6au374.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
