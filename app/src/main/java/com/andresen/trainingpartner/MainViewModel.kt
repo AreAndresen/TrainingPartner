@@ -17,7 +17,7 @@ class MainViewModel() : ViewModel() {
         try {
             val locationResult = fusedLocationProviderClient.lastLocation
             locationResult.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
+                if (task.isSuccessful && task.result != null) {
                     val location = LatLng(task.result.latitude, task.result.longitude)
 
                     mutableDeviceLocation.value = location
