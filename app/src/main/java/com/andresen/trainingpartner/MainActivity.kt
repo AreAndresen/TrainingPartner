@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -16,20 +17,24 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.andresen.library_navigation.TrainingPartnerNavHost
+import com.andresen.library_repositories.login.firebase.GoogleAuthUiClient
 import com.andresen.library_style.theme.TrainingPartnerComposableTheme
 import com.andresen.library_style.theme.TrainingPartnerTheme
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import org.koin.androidx.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -38,6 +43,13 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            context = applicationContext,
+            oneTapClient = Identity.getSignInClient(applicationContext)
+        )
+    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -68,17 +80,24 @@ class MainActivity : ComponentActivity() {
         askPermissions()
 
         setContent {
-
             TrainingPartnerComposableTheme {
                 val navController = rememberNavController()
-                val items = listOf(
+                val items =  if(googleAuthUiClient.getSignedInUser() != null) {
+                    listOf(
                     com.andresen.library_navigation.Screen.Chat,
                     com.andresen.library_navigation.Screen.Map,
-                    com.andresen.library_navigation.Screen.Profile,
-                )
+                    com.andresen.library_navigation.Screen.Profile
+                )} else {
+                    listOf(
+                        com.andresen.library_navigation.Screen.Login
+                    )
+                }
+
                 val scaffoldState = rememberScaffoldState()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
+
+                val state by mainViewModel.state.collectAsState()
 
                 Scaffold(
                     modifier = Modifier,
@@ -98,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                                 "chat" -> painterResource(id = com.andresen.library_style.R.drawable.chat)
                                                 "map" -> painterResource(id = com.andresen.library_style.R.drawable.map)
                                                 "profile" -> painterResource(id = com.andresen.library_style.R.drawable.units)
-                                                else -> painterResource(id = com.andresen.library_style.R.drawable.map)
+                                                else -> painterResource(id = com.andresen.library_style.R.drawable.login_24)
                                             },
                                             contentDescription = null
                                         )
@@ -123,7 +142,20 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     TrainingPartnerNavHost(
                         modifier = Modifier.padding(innerPadding),
+                        context = applicationContext,
                         navController = navController,
+                        googleAuthUiClient = googleAuthUiClient,
+                        state = state,
+                        onSignInResultClick = { activityResult, googleAuthUiClient ->
+                            mainViewModel.onSignInResult(activityResult, googleAuthUiClient)
+                        },
+                        onSignOutClick = { googleAuthUiClient, context, navController ->
+                            mainViewModel.onSignOut(googleAuthUiClient, context, navController)
+                        },
+                        scope = lifecycleScope,
+                        resetState = {
+                            mainViewModel.resetState()
+                        }
                     )
                 }
             }

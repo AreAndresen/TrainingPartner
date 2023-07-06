@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.andresen.feature_map.viewmodel.MapViewModel
 import com.andresen.library_style.theme.TrainingPartnerTheme
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -37,12 +38,13 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun MapScreen(
     modifier: Modifier = Modifier,
-    // viewModel: MapViewModel = koinViewModel()
+    viewModel: MapViewModel = koinViewModel()
     /*onDeleteMarkerOnInfoBoxLongClick: (MarkerUi) -> Unit = { },
     onFriendlyInfoWindowClick: (MarkerUi) -> Unit = { },
     onCreateMarkerLongClick: (LatLng) -> Unit = { },*/
